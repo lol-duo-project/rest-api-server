@@ -1,6 +1,8 @@
 package com.lolduo.restapiserver.controller.champion
 
-import com.lolduo.restapiserver.controller.champion.response.ChampionInfo
+import com.lolduo.restapiserver.controller.champion.response.ChampionInfoResponse
+import com.lolduo.restapiserver.controller.champion.response.ChampionNameResponse
+import com.lolduo.restapiserver.service.ChampionServiceImpl
 import io.swagger.annotations.Api
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -9,174 +11,25 @@ import org.springframework.web.bind.annotation.RestController
 @Api(tags = ["Champion Info"], description = "Champion Info api list")
 @RestController
 @RequestMapping("/api/v1")
-class ChampionInfoController {
+class ChampionInfoController(
+    private val championService: ChampionServiceImpl,
+) {
 
-    @GetMapping("/championList")
-    fun championList():  List<ChampionInfo>{
-        val championList = listOf("Aatrox",
-            "Ahri",
-            "Akali",
-            "Akshan",
-            "Alistar",
-            "Amumu",
-            "Anivia",
-            "Annie",
-            "AurelionSol",
-            "Azir",
-            "Bard",
-            "Belveth",
-            "Blitzcrank",
-            "Brand",
-            "Braum",
-            "Caitlyn",
-            "Camille",
-            "Cassiopeia",
-            "Chogath",
-            "Corki",
-            "Darius",
-            "Diana",
-            "Draven",
-            "DrMundo",
-            "Ekko",
-            "Elise",
-            "Evelynn",
-            "Ezreal",
-            "Fiddlesticks",
-            "Fiora",
-            "Fizz",
-            "Galio",
-            "Gangplank",
-            "Garen",
-            "Gnar",
-            "Gragas",
-            "Graves",
-            "Gwen",
-            "Hecarim",
-            "Heimerdinger",
-            "Illaoi",
-            "Irelia",
-            "Ivern",
-            "Janna",
-            "JarvanIV",
-            "Jax",
-            "Jayce",
-            "Jhin",
-            "Jinx",
-            "Kaisa",
-            "Kalista",
-            "Karma",
-            "Karthus",
-            "Kassadin",
-            "Katarina",
-            "Kayle",
-            "Kayn",
-            "Kennen",
-            "Khazix",
-            "Kindred",
-            "Kled",
-            "KogMaw",
-            "KSante",
-            "Leblanc",
-            "LeeSin",
-            "Leona",
-            "Lillia",
-            "Lissandra",
-            "Lucian",
-            "Lulu",
-            "Lux",
-            "Malphite",
-            "Malzahar",
-            "Maokai",
-            "MasterYi",
-            "MissFortune",
-            "MonkeyKing",
-            "Mordekaiser",
-            "Morgana",
-            "Nami",
-            "Nasus",
-            "Nautilus",
-            "Neeko",
-            "Nidalee",
-            "Nilah",
-            "Nocturne",
-            "Nunu",
-            "Olaf",
-            "Orianna",
-            "Ornn",
-            "Pantheon",
-            "Poppy",
-            "Pyke",
-            "Qiyana",
-            "Quinn",
-            "Rakan",
-            "Rammus",
-            "RekSai",
-            "Rell",
-            "Renata",
-            "Renekton",
-            "Rengar",
-            "Riven",
-            "Rumble",
-            "Ryze",
-            "Samira",
-            "Sejuani",
-            "Senna",
-            "Seraphine",
-            "Sett",
-            "Shaco",
-            "Shen",
-            "Shyvana",
-            "Singed",
-            "Sion",
-            "Sivir",
-            "Skarner",
-            "Sona",
-            "Soraka",
-            "Swain",
-            "Sylas",
-            "Syndra",
-            "TahmKench",
-            "Taliyah",
-            "Talon",
-            "Taric",
-            "Teemo",
-            "Thresh",
-            "Tristana",
-            "Trundle",
-            "Tryndamere",
-            "TwistedFate",
-            "Twitch",
-            "Udyr",
-            "Urgot",
-            "Varus",
-            "Vayne",
-            "Veigar",
-            "Velkoz",
-            "Vex",
-            "Vi",
-            "Viego",
-            "Viktor",
-            "Vladimir",
-            "Volibear",
-            "Warwick",
-            "Xayah",
-            "Xerath",
-            "XinZhao",
-            "Yasuo",
-            "Yone",
-            "Yorick",
-            "Yuumi",
-            "Zac",
-            "Zed",
-            "Zeri",
-            "Ziggs",
-            "Zilean",
-            "Zoe",
-            "Zyra")
-        val championInfoList = mutableListOf<ChampionInfo>()
-        for (i in championList.indices) {
-            championInfoList.add(ChampionInfo(i, championList[i], "https://lolduo-static-img.s3.ap-northeast-2.amazonaws.com/champion/${championList[i]}.svg"))
+    @GetMapping("/championList", params = ["size"])
+    fun championList(
+        size: Int
+    ):  List<ChampionInfoResponse>{
+        return championService.getChampionList(size).map {
+            ChampionInfoResponse(
+                id = it.id,
+                name = it.name.map { name ->
+                    ChampionNameResponse(
+                        locale = name.locale,
+                        name = name.name
+                    )
+                }.toTypedArray(),
+                url = it.url
+            )
         }
-        return championInfoList
     }
 }

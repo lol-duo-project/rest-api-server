@@ -15,11 +15,12 @@ class ChampionInfoController(
     private val championService: ChampionServiceImpl,
 ) {
 
-    @GetMapping("/championList", params = ["size"])
+    @GetMapping("/championList", params = ["size", "locale"])
     fun championList(
-        size: Int
+        size: Int,
+        locale: String
     ):  List<ChampionInfoResponse>{
-        return championService.getChampionList(size).map {
+        return championService.getChampionList(size, locale).map {
             ChampionInfoResponse(
                 id = it.id,
                 name = it.name.map { name ->

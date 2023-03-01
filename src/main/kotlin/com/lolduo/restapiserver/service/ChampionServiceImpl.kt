@@ -8,16 +8,18 @@ import org.springframework.web.client.RestTemplate
 
 @Service
 class ChampionServiceImpl : ChampionService {
-    override fun getChampionList(size:Int): List<ChampionInfo> {
+    override fun getChampionList(size:Int, locale: String): List<ChampionInfo> {
         val url = "http://localhost:8080"
         val currentVersion = RestTemplate().getForEntity(url + "/version", Array<String>::class.java)?.body?.get(0)
         val locales = RestTemplate().getForEntity(url + "/locales", Array<String>::class.java)?.body
+
         var champions = ArrayList<ChampionInfo>()
-        for (locale in locales!!) {
+        for (nowLocale in locales!!) {
+            if(nowLocale != "en_US" && nowLocale != locale) continue
             val championResponse: Array<ChampionResponse>?
             try {
                 championResponse = RestTemplate().getForEntity(
-                    url + "/champions?version=$currentVersion&locale=$locale",
+                    url + "/champions?version=$currentVersion&locale=$nowLocale",
                     Array<ChampionResponse>::class.java
                 )?.body
             } catch (e: Exception) {
@@ -32,7 +34,7 @@ class ChampionServiceImpl : ChampionService {
                                 champion.id,
                                 arrayListOf(
                                     ChampionName(
-                                        locale,
+                                        nowLocale,
                                         champion.name
                                     )
                                 ),
@@ -44,7 +46,7 @@ class ChampionServiceImpl : ChampionService {
                 else {
                     for (champion in championResponse) {
                         val championInfo = champions.find { it.id == champion.id }
-                        championInfo?.name?.add(ChampionName(locale, champion.name))
+                        championInfo?.name?.add(ChampionName(nowLocale, champion.name))
                     }
                 }
             }

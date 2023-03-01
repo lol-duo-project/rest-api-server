@@ -1,5 +1,5 @@
 # pre-built image of the JDK 17
-FROM adoptopenjdk/openjdk17:alpine-slim
+FROM openjdk:17-jdk-alpine
 
 # Set the working directory /app
 WORKDIR /app

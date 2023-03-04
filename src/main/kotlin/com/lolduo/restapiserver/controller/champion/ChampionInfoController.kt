@@ -1,7 +1,6 @@
 package com.lolduo.restapiserver.controller.champion
 
 import com.lolduo.restapiserver.controller.champion.response.ChampionInfoResponse
-import com.lolduo.restapiserver.controller.champion.response.ChampionNameResponse
 import com.lolduo.restapiserver.service.ChampionServiceImpl
 import io.swagger.annotations.Api
 import org.springframework.web.bind.annotation.CrossOrigin
@@ -26,11 +25,8 @@ class ChampionInfoController(
             ChampionInfoResponse(
                 id = it.id,
                 name = it.name.map { name ->
-                    ChampionNameResponse(
-                        locale = name.locale,
-                        name = name.name
-                    )
-                }.toTypedArray(),
+                     name.name
+                },
                 url = it.url
             )
         }

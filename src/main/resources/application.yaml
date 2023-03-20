@@ -1,8 +1,7 @@
 spring:
   data:
     mongodb:
-      url: mongodb://riot-api-service:27017
-      database: riotDB
+      uri: mongodb://localhost:27017/riotDB
   mvc:
     path match:
       matching-strategy: ant_path_matcher

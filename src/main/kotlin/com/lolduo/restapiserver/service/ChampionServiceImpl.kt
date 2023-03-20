@@ -25,7 +25,7 @@ class ChampionServiceImpl (
             val championNamList = listOf<ChampionName>()
             championNamList.plus(ChampionName("en_US", championEnUsName))
             if(championName != championEnUsName)
-                championName.plus(ChampionName(locale, championName))
+                championNamList.plus(ChampionName(locale, championName))
             val imgUrl = "https://lolduo-static-img.s3.ap-northeast-2.amazonaws.com/champion/${size}/${champion.image.full}"
             championInfoList.plus(ChampionInfo(champion.id, championNamList, imgUrl))
         }

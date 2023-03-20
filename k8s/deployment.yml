@@ -18,5 +18,6 @@ spec:
       containers:
         - name: rest-api-kotlin-container
           image: 431955170593.dkr.ecr.ap-northeast-2.amazonaws.com/lol-duo-images:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80

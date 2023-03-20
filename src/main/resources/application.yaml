@@ -1,6 +1,7 @@
 spring:
   data:
     mongodb:
+      url: mongodb://riot-api-service:27017
       database: riotDB
   mvc:
     path match:

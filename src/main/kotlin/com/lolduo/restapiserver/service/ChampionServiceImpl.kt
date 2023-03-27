@@ -1,57 +1,29 @@
 package com.lolduo.restapiserver.service
 
-import com.lolduo.restapiserver.service.request.ChampionResponse
+import com.lolduo.restapiserver.repository.ChampionInfoRepository
 import com.lolduo.restapiserver.service.response.ChampionInfo
 import com.lolduo.restapiserver.service.response.ChampionName
 import org.springframework.stereotype.Service
-import org.springframework.web.client.RestTemplate
 
 @Service
-class ChampionServiceImpl : ChampionService {
+class ChampionServiceImpl (
+    val championInfoRepository: ChampionInfoRepository,
+) : ChampionService {
     override fun getChampionList(size:Int, locale: String): List<ChampionInfo> {
-        val url = "http://localhost:8080"
-        val currentVersion = RestTemplate().getForEntity(url + "/version", Array<String>::class.java)?.body?.get(0)
-        val locales = RestTemplate().getForEntity(url + "/locales", Array<String>::class.java)?.body
-
-        var champions = ArrayList<ChampionInfo>()
-        for (nowLocale in locales!!) {
-            if(nowLocale != "en_US" && nowLocale != locale) continue
-            val championResponse: Array<ChampionResponse>?
-            try {
-                championResponse = RestTemplate().getForEntity(
-                    url + "/champions?version=$currentVersion&locale=$nowLocale",
-                    Array<ChampionResponse>::class.java
-                )?.body
-            } catch (e: Exception) {
-                println(e.message)
-                continue
-            }
-            if (championResponse != null) {
-                if (champions.size == 0) {
-                    for (champion in championResponse) {
-                        champions.add(
-                            ChampionInfo(
-                                champion.id,
-                                arrayListOf(
-                                    ChampionName(
-                                        nowLocale,
-                                        champion.name
-                                    )
-                                ),
-                                "https://lolduo-static-img.s3.ap-northeast-2.amazonaws.com/champion/$size/${champion.name}.png"
-                            )
-                        )
-                    }
-                }
-                else {
-                    for (champion in championResponse) {
-                        val championInfo = champions.find { it.id == champion.id }
-                        championInfo?.name?.add(ChampionName(nowLocale, champion.name))
-                    }
-                }
-            }
+        val champions = championInfoRepository.findByLocale(locale)
+        val championEnUs = championInfoRepository.findByLocale("en_US")
+        val championInfoList = arrayListOf<ChampionInfo>()
+        for(champion in championEnUs) {
+            val championEnUsName = champion.name
+            val championName = champions.find { it.id == champion.id }?.name ?: ""
+            val championNameList = arrayListOf<ChampionName>()
+            championNameList.add(ChampionName("en_US", championEnUsName))
+            if(championName != championEnUsName && championName != "")
+                championNameList.add(ChampionName(locale, championName))
+            val imgUrl = "https://lolduo-static-img.s3.ap-northeast-2.amazonaws.com/champion/${size}/${champion.image.full}"
+            championInfoList.add(ChampionInfo(champion.id, championNameList, imgUrl))
         }
 
-        return champions;
+        return championInfoList
     }
 }

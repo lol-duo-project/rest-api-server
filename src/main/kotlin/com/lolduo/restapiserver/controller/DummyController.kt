@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class DummyController {
 
-    @GetMapping("/dummyDuo")
+    @GetMapping("/dummyDuoDetail")
     @ApiOperation(value = "더미 데이터", notes = "더미 데이터", response = DetailDoubleResponse::class)
     fun getDoubleChampionDetailDummy(dbId: Long?): ResponseEntity<*>? {
         val baseUrl = "https://lol-duo-bucket.s3.ap-northeast-2.amazonaws.com/Rune/"
@@ -80,5 +80,54 @@ class DummyController {
         detailDoubleList.add(detailDouble3)
         val detailDoubleResponse = DetailDoubleResponse(detailChampionComp, detailChampionComp, detailDoubleList)
         return ResponseEntity<Any>(detailDoubleResponse, HttpStatus.OK)
+    }
+
+    @GetMapping("/dummyDuo")
+    @ApiOperation(value = "더미 데이터", notes = "더미 데이터", response = Array<DoubleResponseV2>::class)
+    fun getDoubleDummy(): ResponseEntity<*>? {
+        val championInfo = ChampionResponse(
+            "미스 포츈",
+            "https://d2d4ci5rabfoyr.cloudfront.net/mainPage/champion/MissFortune.svg",
+            "https://d2d4ci5rabfoyr.cloudfront.net/mainPage/mainRune/LethalTempoTemp.svg",
+            "https://d2d4ci5rabfoyr.cloudfront.net/mainPage/position/BOTTOM.svg"
+        )
+        val doubleResponse1 = DoubleResponseV2(
+            1,
+            0,
+            1,
+            "https://lol-duo-bucket.s3.ap-northeast-2.amazonaws.com/mainPage/rankChange/1.svg",
+            championInfo,
+            championInfo,
+            "67.2%"
+        )
+        val doubleResponse2 = DoubleResponseV2(
+            2,
+            1,
+            2,
+            "https://lol-duo-bucket.s3.ap-northeast-2.amazonaws.com/mainPage/rankChange/2.svg",
+            championInfo,
+            championInfo,
+            "60.2%"
+        )
+        val doubleResponse3 = DoubleResponseV2(
+            3,
+            2,
+            3,
+            "https://lol-duo-bucket.s3.ap-northeast-2.amazonaws.com/mainPage/rankChange/3.svg",
+            championInfo,
+            championInfo,
+            "50.2%"
+        )
+        val doubleResponse4 = DoubleResponseV2(
+            4,
+            3,
+            4,
+            "",
+            championInfo,
+            championInfo,
+            "40.2%"
+        )
+        val doubleResponseArray = arrayOf(doubleResponse1, doubleResponse2, doubleResponse3, doubleResponse4)
+        return ResponseEntity<Any>(doubleResponseArray, HttpStatus.OK)
     }
 }

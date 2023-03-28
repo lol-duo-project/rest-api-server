@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - LD-*
+      - hotfix
 
 env:
   ECR_REPOSITORY: lol-duo-images

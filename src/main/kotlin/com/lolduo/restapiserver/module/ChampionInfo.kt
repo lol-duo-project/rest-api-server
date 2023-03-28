@@ -6,7 +6,7 @@ import com.lolduo.restapiserver.module.championInfo.Stats
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
-@Document(collection = "13.5.1")
+@Document(collection = "13.6.1")
 data class ChampionInfo(
     @Id var uniqueId: String,
     val id: String,

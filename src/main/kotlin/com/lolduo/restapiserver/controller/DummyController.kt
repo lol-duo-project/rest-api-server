@@ -203,12 +203,6 @@ class DummyController {
     @GetMapping("/dummySolo")
     @ApiOperation(value = "더미 데이터", notes = "더미 데이터", response = Array<SoloResponseV2>::class)
     fun getSoloDummy(): ResponseEntity<*>? {
-        val championInfo = ChampionResponse(
-            "미스 포츈",
-            "https://d2d4ci5rabfoyr.cloudfront.net/mainPage/champion/MissFortune.svg",
-            "https://d2d4ci5rabfoyr.cloudfront.net/mainPage/mainRune/LethalTempoTemp.svg",
-            "https://d2d4ci5rabfoyr.cloudfront.net/mainPage/position/BOTTOM.svg"
-        )
         val soloResponse1 = SoloResponseV2(
             1,
             0,
